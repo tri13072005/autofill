@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 
-const FORM_URL = 'https://dopx1998.github.io/formdomart/?fbclid=IwY2xjawLsYPdleHRuA2FlbQIxMQABHje__4_HtyytHI5nqS2DkSB6SbR53qqKdVacgvO78yCFhI7AjPghjHVh8UKc_aem_TEXruU42EPrgzSHEwbpVJw';
+const FORM_URL = 'https://popmartstt.com/?zarsrc=1303&utm_source=zalo&utm_medium=zalo&utm_campaign=zalo';
 
 (async () => {
   const browser = await puppeteer.launch({ headless: false });
