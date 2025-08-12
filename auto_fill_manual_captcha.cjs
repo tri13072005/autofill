@@ -9,6 +9,10 @@ const FORM_URL = 'https://dopx1998.github.io/formdomart/?fbclid=IwY2xjawLsYPdleH
 
   for (const personData of dataLines) {
     const [hoten, ngay, thang, nam, sdt, email, cccd] = personData.split('|').map(s => s.trim());
+    // Ensure day and month are always two digits
+    const paddedNgay = ngay.padStart(2, '0');
+    const paddedThang = thang.padStart(2, '0');
+    const dateValue = `${nam}-${paddedThang}-${paddedNgay}`;
     const page = await browser.newPage();
     try {
       await page.goto(FORM_URL, { waitUntil: 'networkidle2' });
@@ -33,14 +37,22 @@ const FORM_URL = 'https://dopx1998.github.io/formdomart/?fbclid=IwY2xjawLsYPdleH
       // Điền thông tin
       await page.type('#txtHoTen', hoten);
 
-      // Try to fill date of birth: prefer single field, fallback to separate fields
-      const dateValue = `${nam}-${thang.padStart(2, '0')}-${ngay.padStart(2, '0')}`;
+      // Autofill date of birth fields
       if (await page.$('#txtNgaySinh')) {
         await page.type('#txtNgaySinh', dateValue);
+      } else if (
+        await page.$('#txtNgaySinh_Ngay') &&
+        await page.$('#txtNgaySinh_Thang') &&
+        await page.$('#txtNgaySinh_Nam')
+      ) {
+        await page.evaluate((d, m, y) => {
+          document.querySelector('#txtNgaySinh_Ngay').value = d;
+          document.querySelector('#txtNgaySinh_Thang').value = m;
+          document.querySelector('#txtNgaySinh_Nam').value = y;
+        }, paddedNgay, paddedThang, nam);
       } else {
-        // fallback: try separate fields
-        if (await page.$('#txtNgay')) await page.type('#txtNgay', ngay);
-        if (await page.$('#txtThang')) await page.type('#txtThang', thang);
+        if (await page.$('#txtNgay')) await page.type('#txtNgay', paddedNgay);
+        if (await page.$('#txtThang')) await page.type('#txtThang', paddedThang);
         if (await page.$('#txtNam')) await page.type('#txtNam', nam);
       }
 
@@ -49,13 +61,7 @@ const FORM_URL = 'https://dopx1998.github.io/formdomart/?fbclid=IwY2xjawLsYPdleH
       await page.type('#txtCCCD', cccd);
 
       // Try to auto-submit the form (if captcha is not required)
-      const submitBtn = await page.$('#btnDangKy');
-      if (submitBtn) {
-        await submitBtn.click();
-        console.log(`✅ Đã điền và bấm Đăng ký cho ${hoten}.`);
-      } else {
-        console.log(`✅ Đã điền xong cho ${hoten} — không tìm thấy nút Đăng ký.`);
-      }
+
     } catch (err) {
       console.log(`❌ Lỗi khi điền form cho ${hoten}: ${err.message}. Bỏ qua.`);
     }
