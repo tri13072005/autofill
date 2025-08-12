@@ -1,0 +1,15 @@
+{
+  "name": "auto_form",
+  "version": "1.0.0",
+  "description": "",
+  "main": "auto_fill_manual_captcha.cjs",
+  "scripts": {
+    "start": "node auto_fill_manual_captcha.cjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^23.4.1"
+  }
+}
