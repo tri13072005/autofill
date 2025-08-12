@@ -1,0 +1,2 @@
+Nguyen Van A|01|01|2000|0123456789|a@gmail.com|123456789
+Nguyen Van B|02|02|1999|0987654321|b@gmail.com|987654321
